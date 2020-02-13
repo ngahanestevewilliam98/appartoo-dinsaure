@@ -1,0 +1,74 @@
+<h4 class="ui horizontal divider header">
+  <i class="folder icon"></i>
+  Mes amis
+</h4>
+
+<div class="ui internally celled grid">
+  <div class="row">
+    <div class="three wide column">
+      <div style="width: 85%;" class="ui positive button" (click)="openModal('addAmis')"><i class="cart plus icon"></i>
+        Ajouter</div>
+      <br><br>
+      <div class="ui right aligned category search item">
+        <div class="ui primary icon input">
+          <input class="prompt" type="text" placeholder="Filtrer les résultats"
+            (keyup)='searchDinosaure($event.target.value)'>
+          <i class="search link icon"></i>
+        </div>
+        <div class="results"></div>
+      </div>
+
+    </div>
+    <div class="thirteen wide column">
+      <!-- list articles -->
+      <div class="ui link cards" *ngIf="dinosaures.length != 0">
+        <div class="card" *ngFor="let item of dinosaures">
+          <div class="ui fluid image" align="center">
+            <div class="ui black ribbon label">
+              <i class="shopping cart icon"></i> J'ai {{item.age}} ans
+            </div>
+          </div>
+          <div class="content">
+            <div class="header">.</div>
+            <div class="description ign">
+              <h2>{{item.code}}</h2>
+              {{item.nourriture}}
+            </div>
+          </div>
+          <div class="extra content">
+            <span>
+              <div class="ui secondary button btn-promouvoir" (click)="delAmitie(item.id_ami)">Supprimer</div>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="dinosaures.length == 0" align="center" style="height: 62vh;">
+        <h1>Aucun ami trouvé</h1>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div id="addAmis" class="modalWl">
+  <div class="modal-contacter">
+    <h4 class="ui horizontal divider header">
+      <i class="folder icon"></i>
+      Ajouter un ami
+    </h4>
+    <p>
+      les champs avec <span class="red">*</span> sont obligatoires.
+    </p>
+    <hr><br>
+    <div class="ui equal width form">
+      <div class="two fields">
+        <div class="field">
+          <label>Email du dinosaure <span class="red">*</span></label>
+          <input placeholder="Email" type="text" [(ngModel)]="codeSelectedDino">
+        </div>
+      </div>
+      <br>
+      <div class="ui submit primary button" (click)="addAmis()">Ajouter</div>
+      <div class="ui right alignedwl submit negative button" (click)="closeModal('addAmis')">Fermer</div>
+    </div>
+  </div>

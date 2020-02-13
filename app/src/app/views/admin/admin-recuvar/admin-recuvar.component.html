@@ -1,0 +1,25 @@
+<div id="loaderInitPage">
+  <img src="assets/images/loader/loading-lazy.gif">
+</div>
+
+<div id="alertPage" class="t-alert-hidden"></div>
+
+
+<div class="sign">
+  <div align="center">
+    <img src="assets/images/avatar2/large/user-check.png" class="img-reuvar">
+  </div>
+  <h4 class="ui horizontal divider header">
+    Récupération du mot de passe
+  </h4>
+  <div class="ui equal width form">
+    <div class="field">
+      <label><i class="user icon"></i> Email</label>
+      <input placeholder="Email" type="email" [(ngModel)]="recuvarEmail">
+    </div>
+    <br><br>
+    <div class="ui submit primary button" (click)="submitRecuvar()">Envoyer</div>
+    <div class="right floated ui positive button" [routerLink]="''">Se connecter</div>
+
+  </div>
+</div>

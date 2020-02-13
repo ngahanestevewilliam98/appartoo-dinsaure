@@ -1,0 +1,66 @@
+<h4 class="ui horizontal divider header">
+  <i class="settings icon"></i>
+  Compte
+</h4>
+<br>
+<div class="ui internally celled grid">
+  <div class="row">
+    <div class="five wide column" align="center">
+      <div class="ui link cards">
+        <div class="card">
+          <div class="image">
+            <img src="assets/images/din.jpg">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ten wide column">
+
+      <div class="ui equal width form">
+        <div class="two fields">
+          <div class="field">
+            <label>Email</label>
+            <input placeholder="Email" type="email" [(ngModel)]="user.code">
+          </div>
+        </div>
+        <div class="two fields">
+          <div class="field">
+            <label>Race </label>
+            <select type="number" [(ngModel)]="user.id_race">
+              <option value="{{r.id}}" *ngFor="let r of race"> {{r.nom}} </option>
+            </select>
+          </div>
+        </div>
+        <div class="two fields">
+          <div class="field">
+            <label>Age</label>
+            <input placeholder="Age" type="number" [(ngModel)]="user.age">
+          </div>
+          <div class="field">
+            <label>Ancien mot de passe</label>
+            <input placeholder="Ancien mot de passe" type="password" [(ngModel)]="anPassword">
+          </div>
+        </div>
+        <div class="two fields">
+          <div class="field">
+            <label>Nouveau mot de passe</label>
+            <input placeholder="Nouveau mot de passe" type="password" [(ngModel)]="newPassword">
+          </div>
+          <div class="field">
+            <label>Confirmation du mot de passe</label>
+            <input placeholder="Confirmation du mot de passe" type="password" [(ngModel)]="newPasswordConfirm">
+          </div>
+        </div>
+        <div class="two fields">
+          <div class="field">
+            <label><i class="user icon"></i> Nourriture</label>
+            <textarea rows="2" [(ngModel)]="user.nourriture"></textarea>
+          </div>
+        </div>
+        <div class="ui submit primary button" (click)="updateUser()">Mettre à jour</div>
+
+      </div>
+
+    </div>
+  </div>
+</div>

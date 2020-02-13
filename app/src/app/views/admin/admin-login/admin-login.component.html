@@ -1,0 +1,29 @@
+<div id="loaderInitPage">
+  <img src="assets/images/loader/loading-lazy.gif">
+</div>
+
+<div id="alertPage" class="t-alert-hidden"></div>
+
+
+<div class="sign">
+  <div align="center">
+    <img src="assets/images/avatar2/large/connect.webp" class="img-login">
+  </div>
+  <h4 class="ui horizontal divider header">
+    Connexion
+  </h4>
+  <div class="ui equal width form">
+    <div class="field">
+      <label><i class="user icon"></i> Email</label>
+      <input placeholder="Email" type="email" [(ngModel)]="loginEmail">
+    </div>
+    <div class="field">
+      <label><i class="lock icon"></i> Mot de passe</label>
+      <input placeholder="Mot de passe" type="password" [(ngModel)]="loginPassword">
+    </div>
+    <br><br>
+    <div class="ui submit primary button" (click)="submitLogin()">Se connecter</div>
+    <div class="right floated ui positive button" [routerLink]="'/create'">Créer un compte</div>
+
+  </div>
+</div>
