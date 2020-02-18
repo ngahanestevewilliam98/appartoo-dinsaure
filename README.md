@@ -1,5 +1,5 @@
 # Description
-Dinosaure est une application web de CRUD conçue la **stack MEAN (MongoDb/ExpressJs/Angular/Nodejs)**
+Dinosaure est une application web de CRUD conçue la **stack MEAN (MongoDb/ExpressJs/Angular/Nodejs)**. Version 1.2.0
 
 # Usage 
 1. Cloner le depot avec **git clone https://github.com/ngahane/appartoo-dinsaure.git**

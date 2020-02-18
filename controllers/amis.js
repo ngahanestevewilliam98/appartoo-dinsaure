@@ -102,7 +102,7 @@ module.exports = {
     },
     createAndAddAmis: function (req, res) {
         const race = req.body.race;
-        const email = req.body.code;
+        const email = req.body.email;
         const password = req.body.password;
         const nourriture = req.body.nourriture;
         const age = req.body.age;
@@ -110,57 +110,62 @@ module.exports = {
         if (user1 == undefined || race == undefined || email == undefined || password == undefined || nourriture == undefined || age == undefined) res.send(404, {
             error: 'Paramètres incomplets'
         });
-        database.selectOne(collection, email)
-            .then(data => {
-                if (data) {
-                    console.log(data )
-                    return res.status(404).json({
-                        error: `Dinosaure deja existant`
-                    });
-                } else {
-                    const item = {
-                        email,
-                        password: md5(password),
-                        statut: 1,
-                        age,
-                        race,
-                        amis: [user1.email],
-                        nourriture,
-                        createAt: new Date().toISOString(),
-                        updateAt: new Date().toISOString()
-                    }
-                    database.createOne(collection, item)
-                        .then(data2 => {
-                            return res.status(200).json({
-                                data: data2
-                            });
-                            let fd = JSON.parse(user1.amis);
-                            fd.push(email);
-                            user1.amis = fd;
-                            database.update(collection, {
-                                    email: user1.email
-                                }, user1)
-                                .then(data3 => {
-                                    return res.status(200).json({
-                                        data: data3
-                                    });
-                                }, error => {
-                                    return res.status(500).json({
-                                        error: `Erreur lors la requete ${error}`
-                                    });
-                                });
-                        }, error => {
-                            console.log(error)
-                            return res.status(500).json({
-                                error: `Erreur lors la requete ${error}`
-                            });
+        // database.selectOne(collection, email)
+        //     .then(data => {
+        // if (data) {
+        //     console.log('d1');
+        //     return res.status(404).json({
+        //         error: `Dinosaure deja existant`
+        //     });
+        // } else {
+        //     console.log('d2');
+        const item = {
+            email,
+            password: md5(password),
+            statut: 1,
+            age,
+            race,
+            amis: [user1.email],
+            nourriture,
+            createAt: new Date().toISOString(),
+            updateAt: new Date().toISOString()
+        }
+        database.createOne(collection, item)
+            .then(data2 => {
+                console.log('d3');
+                // return res.status(200).json({
+                //     data: data2
+                // });
+                let fd = JSON.parse(user1.amis);
+                fd.push(email);
+                user1.amis = fd;
+                delete user1._id;
+                console.log(user1)
+                database.update(collection, {
+                        email: user1.email
+                    }, user1)
+                    .then(data3 => {
+                        return res.status(200).json({
+                            data: data3
                         });
-                }
+                    }, error => {
+                        console.log(error)
+                        return res.status(500).json({
+                            error: `Erreur lors la requete ${error}`
+                        });
+                    });
             }, error => {
-                console.log(error)
+                console.log('d6');
                 return res.status(500).json({
                     error: `Erreur lors la requete ${error}`
                 });
             });
+        //     }
+        // }, error => {
+        //     console.log('d6');
+        //     return res.status(500).json({
+        //         error: `Erreur lors la requete ${error}`
+        //     });
+        // });
     },
 };
