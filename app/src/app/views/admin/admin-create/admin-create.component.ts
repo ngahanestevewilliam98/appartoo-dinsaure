@@ -14,18 +14,9 @@ import { Regex } from './../../../helpers/regex';
 })
 export class AdminCreateComponent implements OnInit {
 
-  race: Array<{ id: number, nom: string }> = [{
-    id: 1,
-    nom: 'Callovosaurus'
-  }, {
-    id: 2,
-    nom: 'Brachylophosaurus'
-  }, {
-    id: 3,
-    nom: 'Brachyceratops'
-  }];
-  idrace: number;
-  code: string;
+  races: Array<string> = ['Callovosaurus', 'Brachylophosaurus', 'Brachyceratops'];
+  race: string;
+  email: string;
   password: string;
   passwordC: string;
   nourriture: string;
@@ -46,8 +37,8 @@ export class AdminCreateComponent implements OnInit {
 
   submitLogin(): void {
     // tslint:disable-next-line: max-line-length
-    if (this.idrace !== undefined && !this.empty(this.code) && this.age !== undefined && !this.empty(this.password) && !this.empty(this.passwordC) && !this.empty(this.nourriture)) {
-      if (Regex.isValideEmail(this.code)) {
+    if (!this.empty(this.race) && !this.empty(this.email) && this.age !== undefined && !this.empty(this.password) && !this.empty(this.passwordC) && !this.empty(this.nourriture)) {
+      if (Regex.isValideEmail(this.email)) {
         if (this.password !== this.passwordC) {
           Alert.show('Erreur. Les 2 mots de passe sont différents');
         } else {
@@ -66,19 +57,26 @@ export class AdminCreateComponent implements OnInit {
     try {
       const route = `${Server.baseUrl()}/dinosaure/add`;
       const params = {
-        idrace: this.idrace,
-        code: this.code,
+        race: this.race,
+        code: this.email,
         password: this.password,
         nourriture: this.nourriture,
         age: this.age
       };
-      await axios.post(route, params);
+      const vv = await axios.post(route, params);
+      console.log(vv);
       Loader.dismiss();
-      Alert.show('Create de compte reussi reussi');
+      Alert.show('Creation de compte reussi reussi');
       this.router.navigate(['']);
     } catch (error) {
       Loader.dismiss();
-      Alert.show('Erreur de create du compte');
+      if (`${error}`.includes('404')) {
+        Alert.show('Erreur. Compte deja existant');
+      } else if (`${error}`.includes('0')) {
+        Alert.show('Erreur. Verifier votre connexion internet');
+      } else {
+        Alert.show('Erreur de create du compte');
+      }
     }
   }
 

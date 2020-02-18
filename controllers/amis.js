@@ -1,54 +1,66 @@
 // Imports
-const database = require('./../configs/database');
-const table = 'amis';
+const database = require('../configs/mongodb');
+const collection = 'dinosaure';
+const md5 = require('md5');
 
 // Routes
 module.exports = {
-    list: function (req, res) {
-        const id_din = req.params.id_din;
-        if (id_din == undefined) res.send(404, {
-            error: 'Paramètres incomplets'
-        });
-        let sqlQuery = 'SELECT amis.id_ami, dinosaure.id_donosaure, dinosaure.code, dinosaure.age, dinosaure.nourriture FROM `amis` INNER JOIN `dinosaure` ON (amis.id_din2 = dinosaure.id_donosaure) WHERE amis.id_din1 = ? AND amis.statut = 1';
-        database.query(sqlQuery, [id_din])
-            .then(data => {
-                return res.status(200).json({
-                    data: data
-                });
-            }, error => {
-                return res.status(500).json({
-                    error: `Erreur lors la requete ${error}`
-                });
-            });
-    },
-    add: async function (req, res) {
-        const id_din1 = req.body.id_din1;
-        const code_din2 = req.body.code_din2;
-        if (id_din1 == undefined || code_din2 == undefined) res.send(404, {
+    list: async function (req, res) {
+        const email = req.params.email;
+        if (email == undefined) res.send(404, {
             error: 'Paramètres incomplets'
         });
         try {
-            let sqlQuery0 = 'SELECT `id_donosaure` FROM `dinosaure` WHERE `code` = ? AND `id_donosaure` != ? LIMIT 1';
-            const data0 = await database.query(sqlQuery0, [code_din2, id_din1])
-            if (data0.length === 1) {
-                const id_din2 = data0[0].id_donosaure;
-                let sqlQuery1 = 'SELECT * FROM `' + table + '` WHERE `id_din1` = ? AND `id_din2` = ? LIMIT 1';
-                const data1 = await database.query(sqlQuery1, [id_din1, id_din2])
-                if (data1.length === 0) {
-                    const sqlQuery = 'INSERT INTO `' + table + '` (`id_din1`, `id_din2`, `statut`, `createAt`, `updateAt`) VALUE (?, ?, ?, NOW(), NOW())';
-                    const data = await database.query(sqlQuery, [id_din1, id_din2, 1])
-                    return res.status(200).json({
-                        data: data
+            const data = await database.selectOne(collection, email);
+            const amis = data.amis;
+            const users = [];
+            const emalU = [];
+            for (let index = 0; index < amis.length; index++) {
+                const oo = await database.selectOne(collection, amis[index]);
+                if (oo) {
+                    users.push(oo);
+                    emalU.push(oo.email)
+                }
+            }
+            return res.status(200).json({
+                data: users,
+                emailAmi: emalU
+            });
+        } catch (ex) {
+            return res.status(500).json({
+                error: `Erreur lors la requete ${error}`
+            });
+        }
+    },
+    add: async function (req, res) {
+        const emailAmi = req.body.emailAmi;
+        const user = req.body.user;
+        if (emailAmi == undefined || user == undefined) res.send(404, {
+            error: 'Paramètres incomplets'
+        });
+        try {
+            const data = await database.selectOne(collection, emailAmi);
+            if (data) {
+                let fd = JSON.parse(user.amis);
+                console.log(fd)
+                const dc = fd.find(element => element == emailAmi);
+                if (dc) {
+                    return res.status(500).json({
+                        error: `Dinosaure vous etes deja amis`
                     });
                 } else {
-                    let sqlQuery2 = 'UPDATE `' + table + '` SET `statut` = ? WHERE `id_din1` = ? AND `id_din2` = ? ';
-                    const data = await database.query(sqlQuery2, [1, id_din1, id_din2])
+                    fd.push(emailAmi)
+                    user.amis = fd;
+                    delete user._id;
+                    const data2 = await database.update(collection, {
+                        email: user.email
+                    }, user);
                     return res.status(200).json({
-                        data: data
+                        data: data2
                     });
                 }
             } else {
-                return res.status(500).json({
+                return res.status(404).json({
                     error: `Dinosaure inexistant`
                 });
             }
@@ -59,21 +71,96 @@ module.exports = {
             });
         }
     },
-    del: function (req, res) {
-        const id = req.params.id;
-        if (id == undefined) res.send(404, {
+    del: async function (req, res) {
+        const emailAmi = req.body.emailAmi;
+        const user = req.body.user;
+        if (emailAmi == undefined || user == undefined) res.send(404, {
             error: 'Paramètres incomplets'
         });
-        let sqlQuery = 'UPDATE `' + table + '` SET `statut` = 0, `updateAt` = NOW() WHERE `id_ami` = ?';
-        database.query(sqlQuery, [id])
+        try {
+            let fd = JSON.parse(user.amis);
+            let fc = [];
+            fd.forEach(element => {
+                if (element != emailAmi) {
+                    fc.push(element)
+                }
+            });
+            user.amis = fc;
+            delete user._id;
+            const data2 = await database.update(collection, {
+                email: user.email
+            }, user);
+            return res.status(200).json({
+                data: data2
+            });
+        } catch (ex) {
+            console.log(ex)
+            return res.status(500).json({
+                error: `Erreur lors la requete ${error}`
+            });
+        }
+    },
+    createAndAddAmis: function (req, res) {
+        const race = req.body.race;
+        const email = req.body.code;
+        const password = req.body.password;
+        const nourriture = req.body.nourriture;
+        const age = req.body.age;
+        const user1 = req.body.user1;
+        if (user1 == undefined || race == undefined || email == undefined || password == undefined || nourriture == undefined || age == undefined) res.send(404, {
+            error: 'Paramètres incomplets'
+        });
+        database.selectOne(collection, email)
             .then(data => {
-                return res.status(200).json({
-                    data: data
-                });
+                if (data) {
+                    console.log(data )
+                    return res.status(404).json({
+                        error: `Dinosaure deja existant`
+                    });
+                } else {
+                    const item = {
+                        email,
+                        password: md5(password),
+                        statut: 1,
+                        age,
+                        race,
+                        amis: [user1.email],
+                        nourriture,
+                        createAt: new Date().toISOString(),
+                        updateAt: new Date().toISOString()
+                    }
+                    database.createOne(collection, item)
+                        .then(data2 => {
+                            return res.status(200).json({
+                                data: data2
+                            });
+                            let fd = JSON.parse(user1.amis);
+                            fd.push(email);
+                            user1.amis = fd;
+                            database.update(collection, {
+                                    email: user1.email
+                                }, user1)
+                                .then(data3 => {
+                                    return res.status(200).json({
+                                        data: data3
+                                    });
+                                }, error => {
+                                    return res.status(500).json({
+                                        error: `Erreur lors la requete ${error}`
+                                    });
+                                });
+                        }, error => {
+                            console.log(error)
+                            return res.status(500).json({
+                                error: `Erreur lors la requete ${error}`
+                            });
+                        });
+                }
             }, error => {
+                console.log(error)
                 return res.status(500).json({
                     error: `Erreur lors la requete ${error}`
                 });
             });
-    }
+    },
 };

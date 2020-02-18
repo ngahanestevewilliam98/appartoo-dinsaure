@@ -56,6 +56,28 @@ body {
   }
 }
 
+.modalWl1 {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(8, 8, 8, .7);
+  z-index: 10000;
+
+  .modal-contacter {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 1;
+    width: 50%;
+    background-color: rgba(255, 255, 255, .9);
+    padding: 15px 25px;
+    z-index: 10001;
+  }
+}
 .right.alignedwl {
   float: right;
 }

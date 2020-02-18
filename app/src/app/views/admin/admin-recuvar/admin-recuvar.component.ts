@@ -45,7 +45,7 @@ export class AdminRecuvarComponent implements OnInit {
     try {
       const params = new URLSearchParams();
       params.append('nom_complet', this.recuvarEmail);
-      const route = `${Server.baseUrl()}/adminer/recuvar/${this.recuvarEmail}`;
+      const route = `${Server.baseUrl()}/dinosaure/recuvar/${this.recuvarEmail}`;
       await axios.get(route);
       this.recuvarEmail = undefined;
       Alert.show('Votre nouveau mot de passse a été envoyé à votre adresse email');

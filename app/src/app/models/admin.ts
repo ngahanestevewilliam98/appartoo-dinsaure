@@ -1,10 +1,11 @@
 export interface Admin {
-    id_donosaure: number;
-    code: string;
+    _id: number;
+    email: string;
     password: string;
     statut: number;
     age: number;
-    id_race: number;
+    amis: string;
+    race: string;
     nourriture: string;
     createAt: string;
     updateAt: string;

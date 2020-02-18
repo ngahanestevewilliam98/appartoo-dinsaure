@@ -20,14 +20,14 @@
         <div class="two fields">
           <div class="field">
             <label>Email</label>
-            <input placeholder="Email" type="email" [(ngModel)]="user.code">
+            <input placeholder="Email" type="email" [(ngModel)]="user.email" disabled="disabled">
           </div>
         </div>
         <div class="two fields">
           <div class="field">
             <label>Race </label>
-            <select type="number" [(ngModel)]="user.id_race">
-              <option value="{{r.id}}" *ngFor="let r of race"> {{r.nom}} </option>
+            <select [(ngModel)]="user.race">
+              <option value="{{r}}" *ngFor="let r of races"> {{r}} </option>
             </select>
           </div>
         </div>

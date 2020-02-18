@@ -1,7 +1,7 @@
 // Imports library
 require('colors');
 const express = require('express');
-const database = require('./configs/database');
+const database = require('./configs/mongodb');
 const access = require('./middlewares/access');
 const log = require('./helpers/logs');
 const mailer = require('./helpers/mailer');

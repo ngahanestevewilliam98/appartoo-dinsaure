@@ -17,7 +17,7 @@ module.exports = class database_{
             "user": data['database']['user'],
             "password": data['database']['password'],
             "database": data['database']['db'],
-            "host": data['database']['host'],
+            "host": data['database']['host']
         });
 
         this._connection.connect(function (err) {

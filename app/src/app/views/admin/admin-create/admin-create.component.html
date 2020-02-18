@@ -17,13 +17,13 @@
   <div class="ui equal width form">
     <div class="field">
       <label><i class="user icon"></i> Email</label>
-      <input placeholder="Email" type="email" [(ngModel)]="code">
+      <input placeholder="Email" type="email" [(ngModel)]="email">
     </div>
     <div class="two fields">
       <div class="field">
         <label>Race</label>
-        <select type="number" [(ngModel)]="idrace">
-          <option value="{{r.id}}" *ngFor="let r of race"> {{r.nom}} </option>
+        <select [(ngModel)]="race">
+          <option value="{{r}}" *ngFor="let r of races"> {{r}} </option>
         </select>
       </div>
       <div class="field">

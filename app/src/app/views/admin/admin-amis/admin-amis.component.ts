@@ -4,7 +4,6 @@ import { SESSION_STORAGE, StorageService } from 'ngx-webstorage-service';
 import axios from 'axios';
 import { Server } from './../../../helpers/server';
 import { Loader } from './../../../helpers/loader';
-import { Article } from './../../../models/article';
 import { ModalComponent } from './../../../helpers/modal';
 import { Alert } from './../../../helpers/alert';
 import { Admin } from './../../../models/admin';
@@ -21,9 +20,20 @@ export class AdminAmisComponent implements OnInit {
 
   user: Admin;
   serverUrl = Server.baseUrl();
-  dinProvisoires: Array<any>  = [];
+  dinProvisoires: Array<any> = [];
   dinosaures: Array<any> = [];
   codeSelectedDino: number;
+
+  newP: { email: string, race: string, age: number, nourriture: string, password: string, passwordC: string } = {
+    email: undefined,
+    race: undefined,
+    age: undefined,
+    nourriture: undefined,
+    password: undefined,
+    passwordC: undefined
+  };
+
+  races: Array<string> = ['Callovosaurus', 'Brachylophosaurus', 'Brachyceratops'];
 
   constructor(public router: Router, @Inject(SESSION_STORAGE) private storage: StorageService) { }
 
@@ -37,10 +47,12 @@ export class AdminAmisComponent implements OnInit {
 
   async getAmis() {
     try {
-      const route = `${Server.baseUrl()}/amis/list/${this.user.id_donosaure}`;
+      const route = `${Server.baseUrl()}/amis/list/${this.user.email}`;
       const bc = await axios.get(route);
       this.dinProvisoires = bc.data.data;
       this.dinosaures = this.dinProvisoires;
+      this.user.amis = JSON.stringify(bc.data.emailAmi);
+      this.storage.set(STORAGE_KEY, this.user as Admin);
     } catch (error) {
       Alert.show('Erreur de connexion au serveur');
     }
@@ -56,7 +68,7 @@ export class AdminAmisComponent implements OnInit {
     }
   }
 
-  openModal(idModal): void {
+  openModal(idModal: string): void {
     ModalComponent.show(idModal);
   }
 
@@ -64,25 +76,13 @@ export class AdminAmisComponent implements OnInit {
     ModalComponent.dismiss(idModal);
   }
 
-  async delAmitie(id: number) {
+  async delAmitie(email: number) {
     Loader.show();
     try {
-      const route = `${Server.baseUrl()}/amis/del/${id}`;
-      const bc = await axios.get(route);
-    } catch (error) {
-      Loader.dismiss();
-      Alert.show('Erreur');
-    }
-  }
-
-
-  async addAmis() {
-    Loader.show();
-    try {
-      const route = `${Server.baseUrl()}/amis/add`;
+      const route = `${Server.baseUrl()}/amis/del`;
       const params = {
-        id_din1: this.user.id_donosaure,
-        code_din2: this.codeSelectedDino,
+        emailAmi: email,
+        user: this.user,
       };
       await axios.post(route, params);
       this.getAmis();
@@ -90,7 +90,57 @@ export class AdminAmisComponent implements OnInit {
       Alert.show('Ajout reussi');
     } catch (error) {
       Loader.dismiss();
-      Alert.show('Erreur de l\'ajout');
+      Alert.show('Erreur de requette');
+    }
+  }
+
+  async addAmis() {
+    Loader.show();
+    try {
+      const route = `${Server.baseUrl()}/amis/add`;
+      const params = {
+        emailAmi: this.codeSelectedDino,
+        user: this.user,
+      };
+      await axios.post(route, params);
+      this.codeSelectedDino = undefined;
+      this.getAmis();
+      Loader.dismiss();
+      this.closeModal('addAmis');
+      Alert.show('Ajout reussi');
+    } catch (error) {
+      Loader.dismiss();
+      if (`${error}`.includes('404')) {
+        Alert.show('Erreur de l\'ajout. Vous pouvez creer un dinosaure et faire de lui votre ami');
+        ModalComponent.show('createDinosaure');
+      } else {
+        Alert.show('Erreur de requette');
+        ModalComponent.dismiss('addAmis');
+      }
+    }
+  }
+  async createDinosaure() {
+    ModalComponent.dismiss('addAmis');
+    Loader.show();
+    try {
+      const route = `${Server.baseUrl()}/amis/createAndAddAmis`;
+      const params = {
+        race: this.newP.race,
+        email: this.newP.email,
+        password: this.newP.password,
+        nourriture: this.newP.nourriture,
+        age: this.newP.age,
+        user1: this.user
+      };
+      const vv = await axios.post(route, params);
+      console.log(vv);
+      this.getAmis();
+      Loader.dismiss();
+      ModalComponent.dismiss('createDinosaure');
+      Alert.show('Create de compte et ajout d\'ami reussi reussi');
+    } catch (error) {
+      Loader.dismiss();
+      Alert.show('Erreur de create du compte');
     }
   }
 

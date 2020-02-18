@@ -59,7 +59,13 @@ export class AdminLoginComponent implements OnInit {
       this.router.navigate(['/admin/compte']);
     } catch (error) {
       Loader.dismiss();
-      Alert.show('Erreur de connexion');
+      if (`${error}`.includes('404')) {
+        Alert.show('Erreur. Compte inexistant');
+      } else if (`${error}`.includes('0')) {
+        Alert.show('Erreur. Verifier votre connexion internet');
+      } else {
+        Alert.show('Erreur de connexion');
+      }
     }
   }
 

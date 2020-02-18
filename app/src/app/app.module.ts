@@ -17,7 +17,6 @@ import { AdminHeaderComponent } from './views/admin/admin-header/admin-header.co
 import { AdminCompteComponent } from './views/admin/admin-compte/admin-compte.component';
 import { AdminLoginComponent } from './views/admin/admin-login/admin-login.component';
 import { AdminRecuvarComponent } from './views/admin/admin-recuvar/admin-recuvar.component';
-import { AdminStocksComponent } from './views/admin/admin-stocks/admin-stocks.component';
 import { AdminCreateComponent } from './views/admin/admin-create/admin-create.component';
 import { AdminAmisComponent } from './views/admin/admin-amis/admin-amis.component';
 
@@ -41,7 +40,6 @@ export function createTranslateLoader(http: HttpClient) {
     AdminCompteComponent,
     AdminLoginComponent,
     AdminRecuvarComponent,
-    AdminStocksComponent,
     AdminCreateComponent,
     AdminAmisComponent,
   ],
